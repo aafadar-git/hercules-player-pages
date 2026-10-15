@@ -1,0 +1,13 @@
+{
+  "format": "hercules-pages-synthetic",
+  "version": 1,
+  "mode": "synthetic-only",
+  "repositoryName": "hercules-player-pages",
+  "projectPath": "/hercules-player-pages/",
+  "fixture": {
+    "name": "sentinel.bin",
+    "hex": "53594e5448455449432050414745532046495854555245204f4e4c590a00010203",
+    "bytes": 33,
+    "sha256": "a9031bab725987e86ae8c18854d2efbe0da37f3aaba272a9d0baefe800b4631d"
+  }
+}
