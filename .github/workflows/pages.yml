@@ -3,6 +3,17 @@ name: Synthetic Pages prototype
 on:
   workflow_dispatch:
     inputs:
+      publication:
+        description: Choose the reviewed publication mode
+        type: choice
+        options: [synthetic, interface-only]
+        default: synthetic
+        required: true
+      confirm_interface_publication:
+        description: Approve replacing the site with the disabled actual player interface only
+        type: boolean
+        required: true
+        default: false
       confirm_synthetic_publication:
         description: Approve publishing only the synthetic page and fixture
         type: boolean
@@ -18,7 +29,7 @@ concurrency:
 
 jobs:
   assemble:
-    if: ${{ github.ref == 'refs/heads/main' && inputs.confirm_synthetic_publication }}
+    if: ${{ github.ref == 'refs/heads/main' && ((inputs.publication == 'synthetic' && inputs.confirm_synthetic_publication && !inputs.confirm_interface_publication) || (inputs.publication == 'interface-only' && inputs.confirm_interface_publication && !inputs.confirm_synthetic_publication)) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
@@ -37,11 +48,20 @@ jobs:
         run: |
           node --input-type=module -e 'import { readFile } from "node:fs/promises"; const p = JSON.parse(await readFile("scripts/pages-policy.json")); if (p.projectPath !== "/" + process.env.REPOSITORY_NAME + "/") throw new Error("Reviewed repository/path mismatch");'
           node --test tests/pages-assembly.test.mjs
-          node scripts/assemble-pages.mjs "$RUNNER_TEMP/synthetic-pages"
-      - name: Upload synthetic-only Pages artifact
+          node --test tests/interface-assembly.test.mjs
+      - name: Assemble selected reviewed publication
+        env:
+          PUBLICATION: ${{ inputs.publication }}
+        run: |
+          case "$PUBLICATION" in
+            synthetic) node scripts/assemble-pages.mjs "$RUNNER_TEMP/pages-site" ;;
+            interface-only) node scripts/assemble-interface.mjs "$RUNNER_TEMP/pages-site" ;;
+            *) exit 1 ;;
+          esac
+      - name: Upload selected reviewed Pages artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
-          path: ${{ runner.temp }}/synthetic-pages
+          path: ${{ runner.temp }}/pages-site
           retention-days: 1
 
   publish:
@@ -56,6 +76,6 @@ jobs:
       name: github-pages
       url: ${{ steps.publish.outputs.page_url }}
     steps:
-      - name: Publish synthetic prototype
+      - name: Publish selected reviewed site
         id: publish
         uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0

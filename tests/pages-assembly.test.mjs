@@ -50,11 +50,13 @@ test('module and asset URLs retain the intended project prefix', async t => {
   assert.match(await readFile(join(target, 'app.js'), 'utf8'), /new URL\('assets\/sentinel.bin', import.meta.url\)/);
 });
 
-test('workflow is manual-only, pinned, synthetic-only and needs no asset secrets', () => {
+test('workflow is manual-only, pinned, explicitly gated and needs no asset secrets', () => {
   assert.match(workflow, /^on:\n  workflow_dispatch:/m);
   assert(!/^  (push|pull_request|schedule):/m.test(workflow));
   assert(!/secrets\.|hercules-private-assets|game-test|NETLIFY|continue-on-error|\bretry\b/.test(workflow));
-  assert.match(workflow, /github.ref == 'refs\/heads\/main' && inputs.confirm_synthetic_publication/);
+  assert.match(workflow, /github.ref == 'refs\/heads\/main'/);
+  assert.match(workflow, /inputs.publication == 'synthetic' && inputs.confirm_synthetic_publication && !inputs.confirm_interface_publication/);
+  assert.match(workflow, /inputs.publication == 'interface-only' && inputs.confirm_interface_publication && !inputs.confirm_synthetic_publication/);
   assert.match(workflow, /retention-days: 1/);
   assert.match(workflow, /pages: write\n      id-token: write/);
   assert([...workflow.matchAll(/uses: (\S+)/g)].every(match => /@[a-f0-9]{40}$/.test(match[1])));

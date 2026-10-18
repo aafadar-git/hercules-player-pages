@@ -1,0 +1,75 @@
+:root { color-scheme: dark; font-family: system-ui, sans-serif; background: #000; color: #eee; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+[hidden] { display: none !important; }
+#player { min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #000; padding: 20px; gap: 12px; }
+#setup { width: min(100%, 480px); }
+h1 { font-size: clamp(2rem, 6vw, 3rem); margin: 8px 0; }
+p { line-height: 1.55; }
+.eyebrow { letter-spacing: .12em; font-size: .72rem; color: #aaa; }
+label { display: block; margin-top: 22px; font-weight: 600; }
+label span { display: block; font-size: .8rem; font-weight: normal; color: #aaa; margin: 6px 0; }
+input { width: 100%; padding: 10px; border: 1px solid #444; border-radius: 6px; background: #151515; }
+button { border: 1px solid #666; border-radius: 6px; padding: 10px 16px; background: #222; color: #fff; cursor: pointer; font: inherit; }
+button:disabled { opacity: .5; cursor: wait; }
+button:hover:enabled { background: #333; }
+:focus-visible { outline: 2px solid #c6acff; outline-offset: 3px; }
+#start, #play { width: 100%; margin-top: 12px; background: #e5dcff; color: #111; font-weight: 600; }
+#preparation, #status { color: #aaa; font-size: .85rem; }
+#status { margin: 0; max-width: 800px; text-align: center; overflow-wrap: anywhere; }
+#status.error { color: #ffabab; }
+#screen { width: 100%; min-height: 0; }
+#game { width: 100%; height: 100%; }
+#tools { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+#tools span { align-self: center; font-size: .75rem; color: #aaa; }
+/* Give gameplay all viewport space remaining after the measured UI rows.
+   Container units fit the display inside that space, without resizing the core. */
+#player.playing { height: 100dvh; min-height: 0; padding: 0; gap: 2px; justify-content: start; overflow: hidden; }
+#player.playing #viewport { flex: 1 1 0; min-height: 0; width: 100%; display: grid; place-items: center; container-type: size; }
+#player.playing #screen { width: min(100cqw, calc(100cqh * var(--game-aspect, 1.3333333333))); height: auto; aspect-ratio: var(--game-aspect, 1.3333333333); }
+#player.playing #tools { flex: 0 0 auto; gap: 4px; }
+#player.playing #tools button { padding: 4px 8px; font-size: .8rem; }
+#player.playing #tools span { flex-basis: auto; }
+#player.playing #status, #player.playing #diagnostics, #player.playing #reload-evidence { max-width: none; }
+#player.playing #diagnostics { max-height: 3em; overflow: auto; }
+#player.playing #status { font-size: .75rem; }
+#player.playing #reload-evidence { flex: 0 0 auto; max-height: 25dvh; overflow: auto; }
+#player.full-window, #player:fullscreen { position: fixed; inset: 0; width: 100%; height: 100dvh; overflow: auto; padding: 8px; z-index: 10; }
+
+@media (max-width: 600px) { #tools span { flex-basis: 100%; text-align: center; } }
+/* Keep the official audio/settings/state toolbar reachable without hover. */
+#game .ejs_big_screen .ejs_menu_bar_hidden { opacity: 1; pointer-events: auto; transform: none; }
+#game .ejs_small_screen .ejs_menu_bar_hidden { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
+
+#diagnostics { white-space: pre-wrap; overflow-wrap: anywhere; font-size: .8rem; color: #ccc; max-width: 800px; width: 100%; margin: 0; }
+#diagnostics { max-height: 120px; overflow: auto; flex-shrink: 0; }
+
+
+#local-mode { margin-top: 20px; }
+summary { cursor: pointer; color: #aaa; }
+
+#reload-evidence { max-width: 800px; width: 100%; font-size: .75rem; color: #aaa; }
+#breadcrumb { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 140px; overflow: auto; }
+
+/* Phone draft: only reposition the official virtual gamepad, no custom inputs. */
+#player.touch-player.playing { padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+#player.touch-player #screen { width: min(100cqw, calc(max(0px, 100cqh - 170px) * var(--game-aspect, 1.3333333333))); transform: translateY(-85px); }
+#player.touch-player #game { overflow: visible; }
+#player.touch-player .ejs_virtualGamepad_parent { bottom: -170px; height: 170px; touch-action: none; }
+#player.touch-player .ejs_virtualGamepad_left { bottom: 40px; width: 110px; height: 110px; }
+#player.touch-player .ejs_virtualGamepad_right { bottom: 40px; }
+#player.touch-player .b_dpad { width: 100%; height: 100%; }
+#player.touch-player .ejs_virtualGamepad_button { touch-action: none; }
+#player.touch-player #tools span { display: none; }
+#player.touch-player #diagnostics { max-height: 3em; }
+/* Let the official menu toggle reveal settings/audio/states without covering inputs. */
+#player.touch-player #game .ejs_menu_bar_hidden { opacity: 0; pointer-events: none; }
+#player.touch-player #game .ejs_virtualGamepad_open { width: 40px; height: 40px; }
+@media (orientation: landscape) {
+  #player.touch-player #screen { width: min(max(0px, calc(100cqw - 300px)), calc(max(0px, 100cqh - 44px) * var(--game-aspect, 1.3333333333))); transform: translateY(-22px); }
+  #player.touch-player .ejs_virtualGamepad_parent { width: 100cqw; left: calc((100% - 100cqw) / 2); bottom: -44px; height: calc(100% + 44px); pointer-events: none; }
+  #player.touch-player .ejs_virtualGamepad_left, #player.touch-player .ejs_virtualGamepad_right { bottom: 45px; pointer-events: auto; }
+  #player.touch-player .ejs_virtualGamepad_bottom { pointer-events: auto; }
+}
+/* The initially open small-screen menu must stay inside the game rectangle. */
+#player.touch-player #game .ejs_menu_bar { top: 0; bottom: auto; max-width: 100%; max-height: 100%; overflow: auto; }

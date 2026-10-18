@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'none'; connect-src 'none'; worker-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Hercules · Player interface</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="player">
+    <section id="setup" aria-labelledby="title">
+      <p class="eyebrow">PLAYSTATION · HERCULES</p>
+      <h1 id="title">Hercules</h1>
+      <p>Gameplay is not enabled yet. This is the actual player interface with playback disabled. No emulator, core, game or BIOS is included or requested.</p>
+      <button id="play" type="button" disabled aria-describedby="status">Play Hercules — unavailable</button>
+    </section>
+    <section id="screen" hidden aria-label="PlayStation emulator">
+      <div id="game" tabindex="0" aria-label="Game screen"></div>
+    </section>
+    <div id="tools" aria-label="Playback controls unavailable">
+      <button id="fullscreen" type="button" disabled>Fullscreen</button>
+      <button id="window" type="button" disabled>Full window</button>
+      <button id="resume-audio" type="button" hidden disabled aria-describedby="audio-recovery-status">Resume game (fallback)</button>
+      <button id="reset" type="button" disabled>Retry startup</button>
+      <span>Audio · controls/settings · save/load state require an enabled emulator.</span>
+    </div>
+    <p id="audio-recovery-status" role="status" aria-live="polite" hidden></p>
+    <details id="reload-evidence"><summary>Startup diagnostics / availability</summary><p>Interface-only publication. Emulator: not loaded. Game and BIOS: not requested. Playback controls are disabled; no startup attempt has occurred.</p><pre id="breadcrumb" hidden></pre></details>
+    <pre id="diagnostics" aria-label="Startup diagnostics" hidden></pre>
+    <button id="copy-diagnostics" type="button" hidden>Copy diagnostics</button>
+    <textarea id="diagnostic-copy" aria-label="Select and copy diagnostics" readonly hidden></textarea>
+    <p id="status" role="status" aria-live="polite">Gameplay is not enabled yet. Play, fullscreen and recovery are unavailable in this interface-only publication.</p>
+  </main>
+</body>
+</html>

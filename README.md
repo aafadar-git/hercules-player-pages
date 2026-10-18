@@ -61,3 +61,48 @@ checkouts, independently verified real assets, permission to redistribute game
 and BIOS, and public artifact/publication approval are all future separate work.
 GitHub's stated Pages/LFS limitation still needs resolution for that future route;
 this synthetic prototype does not test or establish support for it.
+
+## Proposed interface-only publication (local review; not deployed)
+
+The repository now exists publicly at aafadar-git/hercules-player-pages. The text
+above describes the preserved original synthetic prototype and its prior plan.
+This proposal is based on main 1ffd77c1f72698be7c43bce9e743da5708178f8e.
+
+The interface comes from the maintained local player's public/index.html and
+public/style.css, not a simulated loading page. CSS is copied byte-for-byte.
+HTML retains its real layout, removes the app module, tightens CSP to prohibit
+scripts/connect/workers, disables Play and playback controls, and adds explicit
+unavailable/availability text. No emulator canvas or virtual controls are faked.
+Visitors can read the actual initial player UI and expand availability details;
+there is no gameplay, fullscreen, audio, save/load, startup or recovery attempt.
+The original maintained player remains untouched.
+
+Interface deployment output is exactly index.html and style.css. Nothing from
+config.js, app.js, diagnostics modules, data/, vendor/, assets/, node_modules/,
+private repositories or the runtime-research candidates is assembled. No loaders,
+cores, WASM, game, BIOS, extraction workers, fonts, images or third-party scripts
+are fetched or copied. No external requests are initiated by the page. The output
+is public/downloadable source HTML/CSS; it contains no game or BIOS. Emulator/core
+corresponding-source issues do not apply to absent runtime code. Project-interface
+HTML/CSS publication permission is required; no third-party runtime license is
+assumed to authorize it. No new blanket license is asserted for project files.
+
+Validation:
+
+    node --test tests/pages-assembly.test.mjs tests/interface-assembly.test.mjs
+    node scripts/assemble-interface.mjs /absolute/fresh/output-directory
+
+The original synthetic assembler, policy and loading tests are preserved. Only its
+workflow-policy assertion is updated for the explicitly confirmed additional mode.
+The manual workflow retains pinned actions, minimum permissions, one-day artifact
+retention and main-only publication; neither push nor PR triggers deployment.
+The workflow name remains Synthetic Pages prototype for continuity, but its input
+now explicitly selects either synthetic or interface-only output.
+
+Proposed actions require approval: commit only this proposal's seven files to main,
+verify remote commit, then separately dispatch that exact workflow revision with
+publication=interface-only, confirm_interface_publication=true and
+confirm_synthetic_publication=false. Until successful manual publication the current
+synthetic site remains live. The output would replace it at
+https://aafadar-git.github.io/hercules-player-pages/; this is a live publication,
+not a private draft. No settings/secrets/Netlify changes or real assets are involved.
